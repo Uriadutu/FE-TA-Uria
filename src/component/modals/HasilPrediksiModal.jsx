@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import { capitalizeWords } from "../../utils/helper";
 
 const HasilPrediksiModal = ({
   setOpenModal,
@@ -42,11 +42,6 @@ const HasilPrediksiModal = ({
 
   const handleCloseModal = async () => {
     setOpenModal(false);
-    try {
-      await axios.delete("http://localhost:5000/hapus");
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const classCount = useMemo(() => {
@@ -69,26 +64,26 @@ const HasilPrediksiModal = ({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-7xl bg-[#202329] rounded-lg shadow-lg overflow-hidden"
+        className="w-full max-w-7xl bg-white dark:bg-[#202329] rounded-lg shadow-lg overflow-hidden"
       >
-        <div className="flex items-center justify-between px-6 py-4 bg-[#1D1F22]">
-          <h3 className="text-lg font-semibold text-gray-300">
+        <div className="flex items-center justify-between px-6 py-4 bg-gray-100 dark:bg-[#1D1F22]">
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
             Hasil Deteksi Gambar Unggahan
           </h3>
           <button
             onClick={handleCloseModal}
-            className="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-300 bg-transparent rounded-lg hover:bg-red-500 hover:text-gray-100 transition duration-300"
+            className="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-700 dark:text-gray-300 bg-transparent rounded-lg hover:bg-red-500 hover:text-gray-100 transition duration-300"
           >
             ✕
           </button>
         </div>
 
-        <div className="px-6 py-4 text-gray-300 grid grid-cols-3 gap-4">
-          <div className="col-span-2 bg-[#343434] rounded-md p-6 flex justify-center items-center min-h-[400px] relative">
+        <div className="px-6 py-4 text-gray-700 dark:text-gray-300 grid grid-cols-3 gap-4">
+          <div className="col-span-2 border border-gray-300 dark:border-none  bg-gray-50 dark:bg-[#343434] rounded-md p-6 flex justify-center items-center min-h-[400px] relative">
             {isLoading ? (
               <div className="flex flex-col items-center">
                 <div className="w-16 h-16 border-4 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="mt-4 text-gray-400">
+                <p className="mt-4 text-gray-700 dark:text-gray-400">
                   Memproses hasil prediksi...
                 </p>
               </div>
@@ -159,11 +154,9 @@ const HasilPrediksiModal = ({
           </div>
 
           <div className="grid grid-rows-3 gap-3">
-            <div className="col-span-1 bg-[#343434] rounded-md p-4">
+            <div className="col-span-1 border border-gray-300 dark:border-none bg-gray-50 dark:bg-[#343434] rounded-md p-4">
               <div className="flex justify-between">
-                <h1 className="text-lg font-bold">
-                  Tingkat Keyakinan Minimum
-                </h1>
+                <h1 className="text-lg font-bold">Tingkat Keyakinan Minimum</h1>
                 <span>{(minConfidence * 100).toFixed(0)}%</span>
               </div>
 
@@ -174,22 +167,26 @@ const HasilPrediksiModal = ({
                 step="0.01"
                 value={minConfidence}
                 onChange={(e) => setMinConfidence(parseFloat(e.target.value))}
-                className="w-full mt-4"
+                className="w-full mt-4 appearance-none"
+                style={{
+                  accentColor: "red", // Warna utama slider (didukung di beberapa browser)
+                }}
               />
+
               <div className="mt-3 flex justify-between text-sm">
                 <span>0%</span>
                 <span>100%</span>
               </div>
             </div>
 
-            <div className="col-span-1 row-span-2 bg-[#343434] rounded-md p-4">
-              <h1 className="text-center text-[#D2D5DB] font-bold mb-4">
+            <div className="col-span-1 row-span-2 text-gray-700 dark:text-gray-300 bg-gray-50 border border-gray-300 dark:border-none dark:bg-[#343434] rounded-md p-4">
+              <h1 className="text-left text-gray-700 dark:text-[#D2D5DB] font-bold mb-4">
                 Prediksi
               </h1>
 
               {isDataLoading ? (
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 border-4 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-500 border-t-transparent rounded-full animate-spin"></div>
                   <p className="mt-4 text-gray-400">
                     Memproses data prediksi...
                   </p>
@@ -199,20 +196,31 @@ const HasilPrediksiModal = ({
                   {allowedPredictions.map(
                     (className) =>
                       classCount[className] > 0 && (
-                        <div
-                          key={className}
-                          className="flex justify-between items-center border-b border-gray-600 pb-2"
-                        >
-                          <p className="text-lg">
-                            {className.replace("_", " ")}
-                          </p>
-                          <p className="text-xl font-semibold">
-                            {classCount[className]}{" "}
-                            <span className="text-sm">Biji</span>
-                          </p>
+                        <div key={className}>
+                          <div className="flex justify-between items-center border-b border-gray-300 dark:border-gray-600 pb-2">
+                            <p className="text-lg">
+                              {capitalizeWords(className.replace("_", " "))}
+                            </p>
+                            <p className="text-xl font-semibold">
+                              {classCount[className]}{" "}
+                              <span className="text-sm">Biji</span>
+                            </p>
+                          </div>
                         </div>
                       )
                   )}
+
+                  {/* Total Keseluruhan */}
+                  <div className="flex justify-between items-center  pt-3">
+                    <p className="text-lg ">Total</p>
+                    <p className="text-xl font-bold">
+                      {allowedPredictions.reduce(
+                        (total, className) => total + classCount[className],
+                        0
+                      )}{" "}
+                      <span className="text-sm">Biji</span>
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

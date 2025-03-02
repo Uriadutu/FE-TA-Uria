@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import axios from "axios";
 import HasilPrediksiModal from "../modals/HasilPrediksiModal";
+import { AnimatePresence } from "framer-motion";
 
 const Prediksi = () => {
   const [selectedFilters, setSelectedFilters] = useState(["Semua"]);
@@ -119,37 +120,62 @@ const Prediksi = () => {
     }
   };
 
+  const handlePaste = (e) => {
+    const clipboardItems = e.clipboardData.items;
+    for (const item of clipboardItems) {
+      if (item.type.indexOf("image") !== -1) {
+        const file = item.getAsFile();
+        if (file) {
+          handleImageUpload(file);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("paste", handlePaste);
+    return () => {
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, []);
+
   return (
     <div className="px-1 md:px-10 w-full">
+        <AnimatePresence>
+
       {openModal && (
-        <HasilPrediksiModal
+          <HasilPrediksiModal
           setOpenModal={setOpenModal}
           resultImage={resultImage}
           preview={preview}
           Predictions={allowedPredictions}
-        />
-      )}
+          />
+        )}
+        </AnimatePresence>
 
       <div className="px-4 md:px-10 py-2 md:py-10">
         <div className="grid grid-cols-4 mb-3">
-          <div className="col-span-2 grid grid-cols-4 gap-3">
+           <div className="col-span-2 grid grid-cols-4 gap-3">
+            {/* Tombol Semua */}
             <button
-              className={`rounded-full drop-shadow-lg text-gray-300 duration-300 px-3 py-2 ${
+              className={`rounded-full dark:text-gray-300 drop-shadow-lg duration-300 px-3 py-2 ${
                 selectedFilters.includes("Semua")
-                  ? "bg-[#007D09]"
-                  : "bg-[#202329] hover:bg-[#007D09]"
+                  ? "bg-[#007D09] dark:text-gray-300 text-white"
+                  : "dark:bg-[#202329] bg-white dark:hover:bg-[#007D09] hover:text-white hover:bg-[#007D09] dark:hover:text-gray-300"
               }`}
               onClick={() => handleFilterClick("Semua")}
             >
               Semua
             </button>
+
+            {/* Tombol Pala, Pala Busuk, Pala Fuli */}
             {allFilters.map((filter) => (
               <button
                 key={filter}
-                className={`rounded-full drop-shadow-lg text-gray-300 duration-300 px-3 py-2 ${
+                className={`rounded-full drop-shadow-lg dark:text-gray-300 duration-300 px-3 py-2 ${
                   selectedFilters.includes(filter)
-                    ? "bg-[#007D09]"
-                    : "bg-[#202329] hover:bg-[#007D09]"
+                    ? "bg-[#007D09] dark:text-gray-300 text-white"
+                    : "dark:bg-[#202329] bg-white dark:hover:bg-[#007D09] hover:text-white hover:bg-[#007D09] dark:hover:text-gray-300"
                 }`}
                 onClick={() => handleFilterClick(filter)}
               >
@@ -161,32 +187,32 @@ const Prediksi = () => {
 
         <div className="relative grid w-full">
           <Menu />
-          <div className="bg-[#202329] rounded-md px-3 drop-shadow-md py-4 font-bold text-lg md:text-xl">
+          <div className="bg-white border border-gray-300 dark:border-none dark:bg-[#202329] rounded-md px-3 py-4 font-bold text-lg md:text-xl">
             <div className="flex items-center gap-3 mb-5">
-              <h1 className="text-center font-bold text-[#D2D5DB] md:text-left">
+              <h1 className="text-gray-700 dark:text-gray-300 md:text-left">
                 Unggah Gambar Biji Pala
               </h1>
             </div>
 
-            <div className="bg-[#343434] rounded-md w-full px-6 h-[50vh] gap-y-4 flex flex-col justify-center items-center text-gray-300">
-              <div
-                className={`w-full rounded-xl py-32 text-center bg-gray-400 bg-opacity-10 text-gray-300 border-[4px] border-dashed transition-all duration-300 ${
-                  isDragging
-                    ? "border-[#007D09] bg-[#3a3a3a]"
-                    : "border-gray-300"
-                }`}
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                <p className="text-lg">
-                  {isDragging
-                    ? "Lepaskan Gambar untuk Mengunggah"
-                    : "Tarik Gambar Ke Sini"}
-                </p>
-              </div>
-              <p>atau</p>
+            <div
+              className={`bg-gray-100 dark:bg-[#0d0e0f] dark:bg-opacity-20 border rounded-md w-full px-6 h-[70vh] flex flex-col justify-center items-center gap-4 text-gray-700 dark:text-gray-300 border-dashed transition-all duration-300 ${
+                isDragging
+                  ? "border-[#007D09] bg-[#3a3a3a]"
+                  : "dark:border-gray-500 border-gray-400"
+              }`}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <p className="text-lg font-semibold">
+                {isDragging
+                  ? "Lepaskan Gambar untuk Mengunggah"
+                  : "Tarik Gambar Ke Sini, Tempel Gambar"}
+              </p>
+
+              <p className="text-gray-600 dark:text-gray-400">atau</p>
+
               <input
                 type="file"
                 accept="image/*"
@@ -196,13 +222,12 @@ const Prediksi = () => {
               />
               <label
                 htmlFor="upload"
-                className="rounded-md bg-[#007D09] px-3 py-2 hover:bg-[#2d9934] duration-300 cursor-pointer"
+                className="rounded-md bg-[#007D09] px-3 py-2 hover:bg-[#2d9934] text-gray-100 duration-300 cursor-pointer"
               >
                 Pilih Gambar
               </label>
             </div>
-          </div>  
-         
+          </div>
         </div>
       </div>
     </div>

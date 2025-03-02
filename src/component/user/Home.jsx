@@ -44,25 +44,21 @@ const Home = () => {
     if (filter === "Semua") {
       updatedFilters = ["Semua"]; // Jika "Semua" dipilih, reset ke hanya "Semua"
     } else {
-      // Jika "Semua" sedang aktif, nonaktifkan terlebih dahulu
       if (updatedFilters.includes("Semua")) {
         updatedFilters = [];
       }
 
-      // Jika filter sudah ada, hapus (deselection)
       if (updatedFilters.includes(filter)) {
         updatedFilters = updatedFilters.filter((item) => item !== filter);
       } else {
         updatedFilters.push(filter);
       }
 
-      // Jika ketiga tombol telah aktif, aktifkan "Semua" dan reset tombol lainnya
       if (updatedFilters.length === allFilters.length) {
         updatedFilters = ["Semua"];
       }
     }
 
-    // **Cegah semua tombol dari keadaan nonaktif**: jika tidak ada tombol yang aktif, aktifkan "Semua"
     if (updatedFilters.length === 0) {
       updatedFilters = ["Semua"];
     }
@@ -77,10 +73,10 @@ const Home = () => {
           <div className="col-span-2 grid grid-cols-4 gap-3">
             {/* Tombol Semua */}
             <button
-              className={`rounded-full text-gray-300 drop-shadow-lg duration-300 px-3 py-2 ${
+              className={`rounded-full dark:text-gray-300  drop-shadow-lg duration-300 px-3 py-2 ${
                 selectedFilters.includes("Semua")
-                  ? "bg-[#007D09]"
-                  : "bg-[#202329] hover:bg-[#007D09]"
+                  ? "bg-[#007D09] dark:text-gray-300 text-white"
+                  : "dark:bg-[#202329] bg-white dark:hover:bg-[#007D09] hover:text-white hover:bg-[#007D09] dark:hover:text-gray-300"
               }`}
               onClick={() => handleFilterClick("Semua")}
             >
@@ -91,10 +87,10 @@ const Home = () => {
             {allFilters.map((filter) => (
               <button
                 key={filter}
-                className={`rounded-full drop-shadow-lg text-gray-300 duration-300 px-3 py-2 ${
+                className={`rounded-full drop-shadow-lg dark:text-gray-300 duration-300 px-3 py-2 ${
                   selectedFilters.includes(filter)
-                    ? "bg-[#007D09]"
-                    : "bg-[#202329] hover:bg-[#007D09]"
+                    ? "bg-[#007D09] dark:text-gray-300 text-white"
+                    : "dark:bg-[#202329] bg-white dark:hover:bg-[#007D09] hover:text-white hover:bg-[#007D09] dark:hover:text-gray-300"
                 }`}
                 onClick={() => handleFilterClick(filter)}
               >
@@ -106,28 +102,28 @@ const Home = () => {
 
         <div className="relative grid grid-cols-5 gap-3">
           <Menu />
-          <div className="bg-[#202329] col-span-4 rounded-md px-3 py-4 font-bold text-lg md:text-xl drop-shadow-md">
+          <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] col-span-4 rounded-md px-3 py-4 font-bold text-lg md:text-xl">
             <div className="flex items-center gap-3 mb-5">
               <div
-                className="bg-red-600 w-2 h-2 rounded-full"
+                className="bg-red-500 w-2 h-2 rounded-full"
                 title="Kamera Tidak Aktif"
               ></div>
-              <h1 className="text-center font-bold text-[#D2D5DB] md:text-left">
+              <h1 className="text-gray-700 dark:text-gray-300 md:text-left">
                 Monitoring Biji Pala
               </h1>
             </div>
-            <div className="bg-[#343434] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-300">
-              <div className="flex flex-col items-center text-center text-gray-300">
-                <FiCameraOff size={60} className=" text-[#5f5f5f]" />
-                <p className="text-[#5f5f5f]">Kamera Tidak Aktif</p>
-                <button className="rounded-md  bg-[#007D09] px-3 py-2 mt-4 hover:bg-[#2d9934] duration-300">
+            <div className=" border border-gray-300 dark:border-none bg-gray-100 dark:bg-[#2D2D2D] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-500">
+              <div className="flex flex-col items-center text-center">
+                <FiCameraOff size={60} className="text-gray-400" />
+                <p className="text-gray-500">Kamera Tidak Aktif</p>
+                <button className="rounded-md bg-[#007D09] px-3 py-2 mt-4 text-white hover:bg-[#16A34A] duration-300">
                   Aktifkan Kamera
                 </button>
               </div>
             </div>
           </div>
           <div className="grid h-full grid-rows-6 gap-y-3 text-gray-300">
-            <div className="bg-[#202329] p-4 rounded-md text-white">
+            <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] p-4 rounded-md text-gray-700 dark:text-gray-300">
               <div className="flex justify-between">
                 <h1 className="text-lg font-bold">
                   Tingkat Keyakinan Prediksi
@@ -150,54 +146,37 @@ const Home = () => {
               </div>
               <div className="mt-3 flex justify-between text-sm">
                 <span>0%</span>
-
                 <span>100%</span>
               </div>
             </div>
-            <div className="bg-[#202329] row-span-3 col-span-1 drop-shadow-md rounded-md px-3 py-4 text-lg md:text-xl">
-              <h1 className="text-center text-[#D2D5DB] md:text-left font-bold">
+            <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] row-span-3 rounded-md px-3 py-4 text-lg md:text-xl">
+              <h1 className="text-center text-gray-700 dark:text-gray-300 md:text-left font-bold">
                 Prediksi
               </h1>
-              <div className="mt-6 grid grid-rows-3 gap-0 h-full">
-                <span>
-                  <div className="flex justify-between items-center">
-                    <div className="">
-                      <p className="text-2xl">Pala Busuk</p>
-                      <p className="text-sm">Tidak Menguntungkan</p>
-                    </div>
-                    <div className="">
-                      <p className="text-3xl">
-                        0 <span className="text-sm">Biji</span>
-                      </p>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div className="flex justify-between items-center">
-                    <div className="">
-                      <p className="text-2xl">Pala Tanpa Fuli</p>
-                      <p className="text-sm">Menguntungkan</p>
-                    </div>
-                    <div className="">
-                      <p className="text-3xl">
-                        0 <span className="text-sm">Biji</span>
-                      </p>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div className="flex justify-between items-center">
-                    <div className="">
-                      <p className="text-2xl">Pala Fuli</p>
-                      <p className="text-sm">Sangat Menguntungkan</p>
-                    </div>
-                    <div className="">
-                      <p className="text-3xl">
-                        0 <span className="text-sm">Biji</span>
-                      </p>
-                    </div>
-                  </div>
-                </span>
+              <div className="mt-6 text-gray-700 dark:text-gray-300 grid grid-rows-3 gap-0 h-full">
+                {["Pala Busuk", "Pala Tanpa Fuli", "Pala Fuli"].map(
+                  (item, idx) => (
+                    <span key={idx}>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-2xl">{item}</p>
+                          <p className="text-sm">
+                            {idx === 0
+                              ? "Tidak Menguntungkan"
+                              : idx === 1
+                              ? "Menguntungkan"
+                              : "Sangat Menguntungkan"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-3xl">
+                            0 <span className="text-sm">Biji</span>
+                          </p>
+                        </div>
+                      </div>
+                    </span>
+                  )
+                )}
               </div>
             </div>
           </div>

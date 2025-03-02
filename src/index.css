@@ -1,7 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+* {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
 
 .btn-add {
   @apply px-3 py-2 mb-0 bg-[#08c024] text-white font-semibold text-sm rounded shadow-md hover:bg-[#2bae3e] transition duration-300;
@@ -32,4 +37,36 @@
 
 .delete {
   @apply py-1 px-3 text-gray-200 text-xs bg-[#424242] hover:bg-[#2c2c2c] border border-gray-600 rounded;
+}
+
+/* Untuk track (garis slider) */
+input[type="range"]::-webkit-slider-runnable-track {
+ @apply bg-gray-300 h-1;
+}
+
+/* Untuk thumb (titik geser) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: white; /* Warna kuning */
+  border: 3px solid #007D09;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+  
+}
+
+input[type="range"]::-moz-range-track {
+  @apply bg-[#007D09];
+  height: 6px;
+  /* border-radius: 10px; */
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #ffcc00;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
 }
