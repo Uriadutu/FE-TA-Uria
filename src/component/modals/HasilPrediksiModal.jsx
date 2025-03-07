@@ -14,6 +14,8 @@ const HasilPrediksiModal = ({
   const imgRef = useRef(null);
   const [imgDimensions, setImgDimensions] = useState({ width: 1, height: 1 });
   const [minConfidence, setMinConfidence] = useState(initialMinConfidence);
+  console.log(resultImage);
+  
 
   const allowedPredictions = Predictions;
 
@@ -127,7 +129,7 @@ const HasilPrediksiModal = ({
                   return (
                     <div
                       key={index}
-                      className="absolute border-4 border-solid"
+                      className="absolute bg-black bg-opacity-40 border-4 border-solid"
                       style={{
                         left: `${left}px`,
                         top: `${top}px`,
@@ -186,8 +188,8 @@ const HasilPrediksiModal = ({
 
               {isDataLoading ? (
                 <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 border-4 border-gray-200 dark:border-gray-500 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="mt-4 text-gray-400">
+                <div className="w-16 h-16 border-4 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-400">
                     Memproses data prediksi...
                   </p>
                 </div>

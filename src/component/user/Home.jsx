@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Menu from "./Menu";
 import { FiCameraOff } from "react-icons/fi";
+import ESP32Detection from "./tes";
 
 const Home = () => {
   const [selectedFilters, setSelectedFilters] = useState(["Semua"]); // Default "Semua" aktif
@@ -112,14 +113,24 @@ const Home = () => {
                 Monitoring Biji Pala
               </h1>
             </div>
-            <div className=" border border-gray-300 dark:border-none bg-gray-100 dark:bg-[#2D2D2D] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-500">
+            <div className="border border-gray-300 dark:border-none bg-gray-100 dark:bg-[#2D2D2D] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-500">
               <div className="flex flex-col items-center text-center">
                 <FiCameraOff size={60} className="text-gray-400" />
                 <p className="text-gray-500">Kamera Tidak Aktif</p>
                 <button className="rounded-md bg-[#007D09] px-3 py-2 mt-4 text-white hover:bg-[#16A34A] duration-300">
                   Aktifkan Kamera
                 </button>
+                
               </div>
+              {/* <div className="w-full h-full flex justify-center items-center bg-gray-600">
+                {/* <iframe
+                  className="w-full h-full flex justify-center items-center"
+                  src="http://192.168.25.69:81/stream"
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
+              </div> */}
+              {/* <ESP32Detection/> */}
             </div>
           </div>
           <div className="grid h-full grid-rows-6 gap-y-3 text-gray-300">
