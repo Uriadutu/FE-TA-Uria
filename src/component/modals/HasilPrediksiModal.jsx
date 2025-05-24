@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { capitalizeWords } from "../../utils/helper";
+import axios from "axios";
 
 const HasilPrediksiModal = ({
   setOpenModal,
@@ -43,7 +44,12 @@ const HasilPrediksiModal = ({
   }, []);
 
   const handleCloseModal = async () => {
-    setOpenModal(false);
+    try {
+      await axios.delete("http://localhost:5000/hapus-data");
+      setOpenModal(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const classCount = useMemo(() => {
@@ -58,6 +64,7 @@ const HasilPrediksiModal = ({
     });
     return count;
   }, [resultImage?.predictions, allowedPredictions, minConfidence]);
+
 
   return (
     <div className="fixed inset-0 flex items-start pt-20 justify-center bg-black bg-opacity-65 px-4 z-50">

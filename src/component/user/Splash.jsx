@@ -8,10 +8,10 @@ const Splash = () => {
       <div className="flex flex-col md:grid md:grid-cols-3 gap-10 items-center text-center md:text-left">
         {/* Bagian Teks */}
         <div className="md:col-span-2 order-1 md:order-none w-[80%]">
-          <h1 className="text-4xl md:text-5xl lg:text-7xl text-white mb-5 mt-10">
-            Sistem Klasifikasi Biji Buah Pala{" "}
+          <h1 className="text-2xl md:text-3xl lg:text-5xl text-white mb-5 mt-10">
+            Sistem Klasifikasi Biji Buah Pala
           </h1>
-          <p className="text-white text-lg md:text-xl lg:text-2xl mb-10">
+          <p className="text-white text-sm md:text-base lg:text-lg mb-10">
             Sistem Klasifikasi Biji Pala Berbasis IoT. <br />
             Deteksi Otomatis Pala Busuk, Pala Tanpa Fuli, <br />
             dan Pala Fuli untuk Kualitas Terbaik!
@@ -27,7 +27,7 @@ const Splash = () => {
         <div className="order-3 md:col-span-3 flex justify-start">
           <Link
             to={"/beranda"}
-            className=" mb-10 bg-[#5D5D5D] bg-opacity-30 text-white py-2 px-10 md:px-20 border border-white rounded-[2px] hover:bg-gray-100 hover:text-gray-700 transition duration-300 inline-block"
+            className="mb-10 bg-[#5D5D5D] bg-opacity-30 text-white py-2 px-10 md:px-20 border border-white rounded-[2px] hover:bg-gray-100 hover:text-gray-700 transition duration-300 inline-block"
           >
             Mulai
           </Link>
