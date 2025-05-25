@@ -2,13 +2,93 @@ import React, { useEffect, useRef, useState } from "react";
 import Menu from "./Menu";
 import { FiCameraOff } from "react-icons/fi";
 import ESP32Detection from "./tes";
+import axios from "axios";
+import { AnimatePresence } from "framer-motion";
+import HasilPrediksiModal from "../modals/HasilPrediksiModal";
 
 const Home = () => {
   const [selectedFilters, setSelectedFilters] = useState(["Semua"]); // Default "Semua" aktif
-  const allFilters = ["Pala", "Pala Busuk", "Pala Fuli"];
+  const [allowedPredictions, setAllowedPredictions] = useState([
+    "pala",
+    "pala_fuli",
+    "pala_busuk",
+  ]);  
   const [confidence, setConfidence] = useState(80);
   const sliderRef = useRef(null);
   const isDragging = useRef(false);
+  const [isCameraOn, setIsCameraOn] = useState(false);
+
+  const filterMap = {
+    Pala: "pala",
+    "Pala Busuk": "pala_busuk",
+    "Pala Fuli": "pala_fuli",
+  };
+
+  
+  const allFilters = Object.keys(filterMap);
+
+
+  const updateAllowedPredictions = (filters) => {
+    if (filters.includes("Semua")) {
+      setAllowedPredictions(Object.values(filterMap));
+    } else {
+      setAllowedPredictions(filters.map((filter) => filterMap[filter]));
+    }
+  };
+
+  const [preview, setPreview] = useState(null);
+  const [resultImage, setResultImage] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
+  console.log(resultImage, selectedFilters);
+
+  const handleImageUpload = async (file) => {
+    setPreview(URL.createObjectURL(file));
+    setResultImage(null);
+    setOpenModal(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/pala-deteksi",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      if (response.data) {
+        setResultImage(response.data || null);
+      } else {
+        console.error(
+          "Response tidak memiliki data yang sesuai:",
+          response.data
+        );
+      }
+    } catch (error) {
+      console.error("Error mengunggah gambar:", error);
+    }
+  };
+
+  const handleSnapshot = async () => {
+    const snapshotUrl = "http://192.168.89.127/capture";
+
+    try {
+      const response = await fetch(snapshotUrl);
+      const blob = await response.blob();
+
+      // ✅ Ubah blob menjadi File dengan ekstensi .jpg
+      const file = new File([blob], `image.png`, {
+        type: "image/jpeg",
+      });
+
+      // ✅ Kirim ke fungsi upload
+      handleImageUpload(file);
+    } catch (error) {
+      console.error("Gagal mengambil gambar:", error);
+      alert("Gagal jepret. Pastikan ESP32-CAM terhubung.");
+    }
+  };
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -38,12 +118,11 @@ const Home = () => {
   const handleMouseDown = () => {
     isDragging.current = true;
   };
-
   const handleFilterClick = (filter) => {
     let updatedFilters = [...selectedFilters];
 
     if (filter === "Semua") {
-      updatedFilters = ["Semua"]; // Jika "Semua" dipilih, reset ke hanya "Semua"
+      updatedFilters = ["Semua"];
     } else {
       if (updatedFilters.includes("Semua")) {
         updatedFilters = [];
@@ -58,17 +137,28 @@ const Home = () => {
       if (updatedFilters.length === allFilters.length) {
         updatedFilters = ["Semua"];
       }
-    }
 
-    if (updatedFilters.length === 0) {
-      updatedFilters = ["Semua"];
+      if (updatedFilters.length === 0) {
+        updatedFilters = ["Semua"];
+      }
     }
 
     setSelectedFilters(updatedFilters);
+    updateAllowedPredictions(updatedFilters);
   };
 
   return (
     <div className="px-1 md:px-10 w-full">
+      <AnimatePresence>
+        {openModal && (
+          <HasilPrediksiModal
+            setOpenModal={setOpenModal}
+            resultImage={resultImage}
+            preview={preview}
+            Predictions={allowedPredictions}
+          />
+        )}
+      </AnimatePresence>
       <div className="px-4 md:px-10 py-2 md:py-10">
         <div className="grid grid-cols-4 mb-3">
           <div className="col-span-2 grid grid-cols-4 gap-3">
@@ -113,24 +203,46 @@ const Home = () => {
                 Monitoring Biji Pala
               </h1>
             </div>
-            <div className="border relative border-gray-300 dark:border-none bg-gray-100 dark:bg-[#2D2D2D] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-500">
-              {/* <div className="flex flex-col items-center text-center">
-                <FiCameraOff size={60} className="text-gray-400" />
-                <p className="text-gray-500">Kamera Tidak Aktif</p>
-                <button className="rounded-md bg-[#007D09] px-3 py-2 mt-4 text-white hover:bg-[#16A34A] duration-300">
-                  Aktifkan Kamera
-                </button>
-              </div> */}
-              <img
-                src="http://192.168.89.127:81/stream"
-                alt="ESP32-CAM Stream"
-                style={{ border: "2px solid #333" }}
-                className="w-full h-full object-cover"
-              />
-              <button className="absolute bottom-10 flex justify-center">
-                prediksi
-                
-              </button>
+            <div className="border relative  border-gray-300 dark:border-none bg-gray-100 dark:bg-[#2D2D2D] rounded-md w-full h-[70vh] flex justify-center items-center text-gray-500">
+              {isCameraOn && (
+                <div className="absolute bottom-10">
+                  <div className="gap-5 bottom-10 flex justify-center">
+                    <button
+                      onClick={() => setIsCameraOn(false)}
+                      className="rounded-md bg-[#888888] px-3 py-2 mt-4 text-white hover:bg-[#a6a6a6] duration-300"
+                    >
+                      Matikan Kamera
+                    </button>
+                    <button
+                      onClick={() => handleSnapshot()}
+                      className="rounded-md bg-[#007D09] px-3 py-2 mt-4 text-white hover:bg-[#16A34A] duration-300"
+                    >
+                      Prediksi
+                    </button>
+                  </div>
+                </div>
+              )}
+              {isCameraOn ? (
+                <div className="w-full h-full">
+                  <img
+                    src="http://192.168.89.127:81/stream"
+                    alt="ESP32-CAM Stream"
+                    style={{ border: "2px solid #333" }}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center text-center">
+                  <FiCameraOff size={60} className="text-gray-400" />
+                  <p className="text-gray-500">Kamera Tidak Aktif</p>
+                  <button
+                    onClick={() => setIsCameraOn(true)}
+                    className="rounded-md bg-[#007D09] px-3 py-2 mt-4 text-white hover:bg-[#16A34A] duration-300"
+                  >
+                    Aktifkan Kamera
+                  </button>
+                </div>
+              )}
               {/* <ESP32Detection/> */}
             </div>
           </div>
