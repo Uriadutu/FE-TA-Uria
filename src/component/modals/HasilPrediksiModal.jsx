@@ -178,7 +178,7 @@ const HasilPrediksiModal = ({
                 onChange={(e) => setMinConfidence(parseFloat(e.target.value))}
                 className="w-full mt-4 appearance-none"
                 style={{
-                  accentColor: "red", // Warna utama slider (didukung di beberapa browser)
+                  accentColor: "red",  
                 }}
               />
 

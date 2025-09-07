@@ -3,9 +3,6 @@ import HomePage from "./pages/userPage/HomePage";
 import Splash from "./component/user/Splash";
 import PrediksiPage from "./pages/userPage/PrediksiPage";
 
-
-
-
 function App() {
   return (
     <div>
@@ -13,7 +10,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="/beranda" element={<HomePage />} />
-          <Route path="/prediksi" element={<PrediksiPage />} />
+           <Route path="/prediksi" element={<PrediksiPage />} />
+
         </Routes>
       </BrowserRouter>
     </div>

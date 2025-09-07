@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Menu from "./Menu";
 import { FiCameraOff } from "react-icons/fi";
-import ESP32Detection from "./tes";
 import axios from "axios";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import HasilPrediksiModal from "../modals/HasilPrediksiModal";
 
 const Home = () => {
@@ -12,11 +11,12 @@ const Home = () => {
     "pala",
     "pala_fuli",
     "pala_busuk",
-  ]);  
+  ]);
   const [confidence, setConfidence] = useState(80);
   const sliderRef = useRef(null);
   const isDragging = useRef(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
+  const [error, setError] = useState(false);
 
   const filterMap = {
     Pala: "pala",
@@ -24,9 +24,7 @@ const Home = () => {
     "Pala Fuli": "pala_fuli",
   };
 
-  
   const allFilters = Object.keys(filterMap);
-
 
   const updateAllowedPredictions = (filters) => {
     if (filters.includes("Semua")) {
@@ -71,7 +69,7 @@ const Home = () => {
   };
 
   const handleSnapshot = async () => {
-    const snapshotUrl = "http://192.168.89.127/capture";
+    const snapshotUrl = "http://192.168.137.194/capture";
 
     try {
       const response = await fetch(snapshotUrl);
@@ -86,7 +84,11 @@ const Home = () => {
       handleImageUpload(file);
     } catch (error) {
       console.error("Gagal mengambil gambar:", error);
-      alert("Gagal jepret. Pastikan ESP32-CAM terhubung.");
+      // alert("Gagal Mengambil Gambar. Pastikan ESP32-CAM terhubung.");
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 1500);
     }
   };
 
@@ -159,6 +161,24 @@ const Home = () => {
           />
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {error && (
+          <div className="fixed inset-0 flex items-start pt-20 justify-center bg-black bg-opacity-65 px-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-2xl bg-white dark:bg-[#202329] rounded-lg shadow-lg overflow-hidden"
+            >
+              {" "}
+              <h3 className="text-lg text-center p-10 font-semibold text-gray-700 dark:text-gray-300">
+                Gagal Menangkap Gambar, Pastikan ESP Terhubung
+              </h3>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       <div className="px-4 md:px-10 py-2 md:py-10">
         <div className="grid grid-cols-4 mb-3">
           <div className="col-span-2 grid grid-cols-4 gap-3">
@@ -193,7 +213,7 @@ const Home = () => {
 
         <div className="relative grid grid-cols-5 gap-3">
           <Menu />
-          <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] col-span-4 rounded-md px-3 py-4 font-bold text-lg md:text-xl">
+          <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] col-span-5 rounded-md px-3 py-4 font-bold text-lg md:text-xl">
             <div className="flex items-center gap-3 mb-5">
               <div
                 className="bg-red-500 w-2 h-2 rounded-full"
@@ -225,7 +245,7 @@ const Home = () => {
               {isCameraOn ? (
                 <div className="w-full h-full">
                   <img
-                    src="http://192.168.89.127:81/stream"
+                    src="http://192.168.137.194:81/stream"
                     alt="ESP32-CAM Stream"
                     style={{ border: "2px solid #333" }}
                     className="w-full h-full object-cover"
@@ -246,7 +266,7 @@ const Home = () => {
               {/* <ESP32Detection/> */}
             </div>
           </div>
-          <div className="grid h-full grid-rows-6 gap-y-3 text-gray-300">
+          {/* <div className="grid h-full grid-rows-6 gap-y-3 text-gray-300">
             <div className="bg-white  border border-gray-300 dark:border-none dark:bg-[#202329] p-4 rounded-md text-gray-700 dark:text-gray-300">
               <div className="flex justify-between">
                 <h1 className="text-lg font-bold">
@@ -303,7 +323,7 @@ const Home = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
